@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codon Cipher Encoder/Decoder</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      color: #333;
+    }
+    h1 {
+      color: #222;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 0.6rem 1.2rem;
+      margin-right: 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #357ABD;
+    }
+    .output {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      min-height: 60px;
+      margin-top: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 1.1rem;
+      white-space: pre-wrap;
+    }
+    label {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Codon Cipher Encoder/Decoder</h1>
+  <label for="input">Input:</label>
+  <textarea id="input" placeholder="Type or paste your message here..."></textarea>
+  <br>
+  <button onclick="encode()">Encode</button>
+  <button onclick="decode()">Decode</button>
+  <h3>Output:</h3>
+  <div class="output" id="output"></div>
+
+  <script>
+    const codonTable = {
+      "111": "A", "112": "Q", "113": "7", "114": ":",
+      "121": "B", "122": "R", "123": "8", "124": ";",
+      "131": "C", "132": "S", "133": "9", "134": "!",
+      "141": "D", "142": "T", "143": "0", "144": "?",
+      "211": "E", "212": "U", "213": "@", "214": ".",
+      "221": "F", "222": "V", "223": "#", "224": ",",
+      "231": "G", "232": "W", "233": "$", "234": "{}",
+      "241": "H", "242": "X", "243": "_", "244": "[]",
+      "311": "I", "312": "Y", "313": "&", "314": "=",
+      "321": "J", "322": "Z", "323": "-", "324": "%",
+      "331": "K", "332": "1", "333": "+", "334": "<",
+      "341": "L", "342": "2", "343": "()", "344": ">",
+      "411": "M", "412": "3", "413": "/", "414": "~",
+      "421": "N", "422": "4", "423": "*", "424": "÷",
+      "431": "O", "432": "5", "433": "“", "434": "|",
+      "441": "P", "442": "6", "443": "`", "444": " "
+    };
+
+    const reverseTable = {};
+    for (let code in codonTable) {
+      reverseTable[codonTable[code]] = code;
+    }
+
+    function encode() {
+      const input = document.getElementById("input").value.toUpperCase();
+      let result = [];
+      for (let ch of input) {
+        result.push(reverseTable[ch] || "");
+      }
+      document.getElementById("output").innerText = result.join(" ");
+    }
+
+    function decode() {
+      const input = document.getElementById("input").value.trim().toUpperCase();
+      const parts = input.split(/\s+/);
+      let result = parts.map(code => codonTable[code] || "?").join("");
+      document.getElementById("output").innerText = result;
+    }
+  </script>
+</body>
+</html>
