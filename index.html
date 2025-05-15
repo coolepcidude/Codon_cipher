@@ -5,63 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Codon Cipher Encoder/Decoder</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 2rem;
-      background: linear-gradient(to right, #e0eafc, #cfdef3);
-      color: #333;
-    }
-    h1 {
-      color: #222;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      margin-bottom: 1rem;
-      font-family: monospace;
-      font-size: 1rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    button {
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 0.6rem 1.2rem;
-      margin-right: 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background-color: #357ABD;
-    }
-    .output {
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      min-height: 60px;
-      margin-top: 1rem;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 1.1rem;
-      white-space: pre-wrap;
-    }
-    label {
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
+    body { font-family: sans-serif; padding: 2rem; background: #f5f5f5; }
+    h1 { color: #333; }
+    textarea { width: 100%; height: 80px; margin-bottom: 1rem; font-family: monospace; }
+    button, .about-button { margin: 0.5rem 0; padding: 0.5rem 1rem; border: none; border-radius: 5px; background-color: #333; color: white; cursor: pointer; text-decoration: none; display: inline-block; }
+    .output { background: #fff; border: 1px solid #ccc; padding: 1rem; min-height: 50px; }
   </style>
 </head>
 <body>
   <h1>Codon Cipher Encoder/Decoder</h1>
-  <label for="input">Input:</label>
-  <textarea id="input" placeholder="Type or paste your message here..."></textarea>
+  <a href="about.html" class="about-button">About</a>
+  <label>Input:</label>
+  <textarea id="input"></textarea>
   <br>
   <button onclick="encode()">Encode</button>
   <button onclick="decode()">Decode</button>
@@ -90,14 +45,14 @@
 
     const reverseTable = {};
     for (let code in codonTable) {
-      reverseTable[codonTable[code]] = code;
+      reverseTable[codonTable[code].toUpperCase()] = code;
     }
 
     function encode() {
       const input = document.getElementById("input").value.toUpperCase();
       let result = [];
       for (let ch of input) {
-        result.push(reverseTable[ch] || "");
+        result.push(reverseTable[ch.toUpperCase()] || "");
       }
       document.getElementById("output").innerText = result.join(" ");
     }
