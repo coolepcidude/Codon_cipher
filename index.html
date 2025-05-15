@@ -10,11 +10,16 @@
     textarea { width: 100%; height: 80px; margin-bottom: 1rem; font-family: monospace; }
     button, .about-button { margin: 0.5rem 0; padding: 0.5rem 1rem; border: none; border-radius: 5px; background-color: #333; color: white; cursor: pointer; text-decoration: none; display: inline-block; }
     .output { background: #fff; border: 1px solid #ccc; padding: 1rem; min-height: 50px; }
+    input[type="text"] { padding: 0.5rem; margin-bottom: 1rem; width: 200px; }
   </style>
 </head>
 <body>
   <h1>Codon Cipher Encoder/Decoder</h1>
   <a href="about.html" class="about-button">About</a>
+  <br><br>
+  <label>Codon Characters (4 unique characters):</label><br>
+  <input type="text" id="codonChars" value="1234" maxlength="4">
+  <br>
   <label>Input:</label>
   <textarea id="input"></textarea>
   <br>
@@ -24,43 +29,56 @@
   <div class="output" id="output"></div>
 
   <script>
-    const codonTable = {
-      "111": "A", "112": "Q", "113": "7", "114": ":",
-      "121": "B", "122": "R", "123": "8", "124": ";",
-      "131": "C", "132": "S", "133": "9", "134": "!",
-      "141": "D", "142": "T", "143": "0", "144": "?",
-      "211": "E", "212": "U", "213": "@", "214": ".",
-      "221": "F", "222": "V", "223": "#", "224": ",",
-      "231": "G", "232": "W", "233": "$", "234": "{}",
-      "241": "H", "242": "X", "243": "_", "244": "[]",
-      "311": "I", "312": "Y", "313": "&", "314": "=",
-      "321": "J", "322": "Z", "323": "-", "324": "%",
-      "331": "K", "332": "1", "333": "+", "334": "<",
-      "341": "L", "342": "2", "343": "()", "344": ">",
-      "411": "M", "412": "3", "413": "/", "414": "~",
-      "421": "N", "422": "4", "423": "*", "424": "÷",
-      "431": "O", "432": "5", "433": "“", "434": "|",
-      "441": "P", "442": "6", "443": "`", "444": " "
-    };
+    const values = [
+      "A", "Q", "7", ":", "B", "R", "8", ";", "C", "S", "9", "!", "D", "T", "0", "?",
+      "E", "U", "@", ".", "F", "V", "#", ",", "G", "W", "$", "{}", "H", "X", "_", "[]",
+      "I", "Y", "&", "=", "J", "Z", "-", "%", "K", "1", "+", "<", "L", "2", "()", ">",
+      "M", "3", "/", "~", "N", "4", "*", "÷", "O", "5", "“", "|", "P", "6", "`", " "
+    ];
 
-    const reverseTable = {};
-    for (let code in codonTable) {
-      reverseTable[codonTable[code].toUpperCase()] = code;
+    function getCodonMap(chars) {
+      const codonMap = {};
+      const reverseMap = {};
+      let i = 0;
+      for (let a of chars) {
+        for (let b of chars) {
+          for (let c of chars) {
+            const code = a + b + c;
+            const val = values[i];
+            codonMap[code] = val;
+            reverseMap[val.toUpperCase()] = code;
+            i++;
+          }
+        }
+      }
+      return { codonMap, reverseMap };
     }
 
     function encode() {
+      const chars = document.getElementById("codonChars").value;
+      if (new Set(chars).size !== 4) {
+        alert("Please enter 4 unique characters for the codon alphabet.");
+        return;
+      }
+      const { reverseMap } = getCodonMap(chars);
       const input = document.getElementById("input").value.toUpperCase();
       let result = [];
       for (let ch of input) {
-        result.push(reverseTable[ch.toUpperCase()] || "");
+        result.push(reverseMap[ch.toUpperCase()] || "");
       }
       document.getElementById("output").innerText = result.join(" ");
     }
 
     function decode() {
-      const input = document.getElementById("input").value.trim().toUpperCase();
+      const chars = document.getElementById("codonChars").value;
+      if (new Set(chars).size !== 4) {
+        alert("Please enter 4 unique characters for the codon alphabet.");
+        return;
+      }
+      const { codonMap } = getCodonMap(chars);
+      const input = document.getElementById("input").value.trim();
       const parts = input.split(/\s+/);
-      let result = parts.map(code => codonTable[code] || "?").join("");
+      let result = parts.map(code => codonMap[code] || "?").join("");
       document.getElementById("output").innerText = result;
     }
   </script>
