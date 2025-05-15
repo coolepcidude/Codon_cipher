@@ -38,3 +38,5 @@ https://coolepcidude.github.io/Codon_cipher/
 This project is open-source and free to use.
 
 ---
+
+Note: The website was made using ChatGPT as I do not know how to code.
