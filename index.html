@@ -42,7 +42,7 @@
       font-family: monospace;
       text-align: center;
     }
-    .button, .about-button {
+    .button {
       padding: 0.5rem 1rem;
       border: none;
       border-radius: 5px;
@@ -53,7 +53,7 @@
       margin: 0.5rem;
       transition: background 0.3s;
     }
-    .button:hover, .about-button:hover {
+    .button:hover {
       background-color: #555;
     }
     .output {
@@ -86,7 +86,6 @@
 <body>
   <div class="container">
     <h1>Codon Cipher Encoder/Decoder</h1>
-    <a href="about.html" class="about-button">About</a>
     <label for="codonChars">Codon Characters (4 unique chars):</label>
     <input type="text" id="codonChars" value="1234" maxlength="4">
     <label for="input">Input:</label>
