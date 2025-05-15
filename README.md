@@ -17,7 +17,7 @@ Decoding reverses the process.
 
 You can use the tool live here:
 
-> [[codon cipher](https://yourusername.github.io/codon-cipher)](https://coolepcidude.github.io/Codon_cipher/)
+(https://yourusername.github.io/codon-cipher)](https://coolepcidude.github.io/Codon_cipher/)
 
 ##  Features
 
