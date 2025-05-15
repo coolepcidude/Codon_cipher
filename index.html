@@ -5,62 +5,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Codon Cipher Encoder/Decoder</title>
   <style>
-    body { font-family: sans-serif; padding: 2rem; background: #f5f5f5; }
-    h1 { color: #333; }
-    textarea { width: 100%; height: 80px; margin-bottom: 1rem; font-family: monospace; }
-    button, .about-button { margin: 0.5rem 0; padding: 0.5rem 1rem; border: none; border-radius: 5px; background-color: #333; color: white; cursor: pointer; text-decoration: none; display: inline-block; }
-    .output { background: #fff; border: 1px solid #ccc; padding: 1rem; min-height: 50px; }
-    input[type="text"] { padding: 0.5rem; margin-bottom: 1rem; width: 200px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #eef2f3, #8e9eab);
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 100px;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 0.5rem;
+      resize: vertical;
+    }
+    input[type="text"] {
+      width: 150px;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-family: monospace;
+      text-align: center;
+    }
+    .button, .about-button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 0.5rem;
+      transition: background 0.3s;
+    }
+    .button:hover, .about-button:hover {
+      background-color: #555;
+    }
+    .output {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      min-height: 50px;
+      margin-top: 1rem;
+      border-radius: 5px;
+      word-wrap: break-word;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
-  <h1>Codon Cipher Encoder/Decoder</h1>
-  <a href="about.html" class="about-button">About</a>
-  <br><br>
-  <label>Codon Characters (4 unique characters):</label><br>
-  <input type="text" id="codonChars" value="1234" maxlength="4">
-  <br>
-  <label>Input:</label>
-  <textarea id="input"></textarea>
-  <br>
-  <button onclick="encode()">Encode</button>
-  <button onclick="decode()">Decode</button>
-  <h3>Output:</h3>
-  <div class="output" id="output"></div>
+  <div class="container">
+    <h1>Codon Cipher Encoder/Decoder</h1>
+    <a href="about.html" class="about-button">About</a>
+    <label for="codonChars">Codon Characters (4 unique chars):</label>
+    <input type="text" id="codonChars" value="1234" maxlength="4">
+    <label for="input">Input:</label>
+    <textarea id="input"></textarea>
+    <div class="controls">
+      <button class="button" onclick="encode()">Encode</button>
+      <button class="button" onclick="decode()">Decode</button>
+    </div>
+    <h3>Output:</h3>
+    <div class="output" id="output"></div>
+  </div>
 
   <script>
-    const values = [
-      "A", "Q", "7", ":", "B", "R", "8", ";", "C", "S", "9", "!", "D", "T", "0", "?",
-      "E", "U", "@", ".", "F", "V", "#", ",", "G", "W", "$", "{}", "H", "X", "_", "[]",
-      "I", "Y", "&", "=", "J", "Z", "-", "%", "K", "1", "+", "<", "L", "2", "()", ">",
-      "M", "3", "/", "~", "N", "4", "*", "÷", "O", "5", "“", "|", "P", "6", "`", " "
-    ];
+    const baseCodonTable = {
+      "111": "A", "112": "Q", "113": "7", "114": ":",
+      "121": "B", "122": "R", "123": "8", "124": ";",
+      "131": "C", "132": "S", "133": "9", "134": "!",
+      "141": "D", "142": "T", "143": "0", "144": "?",
+      "211": "E", "212": "U", "213": "@", "214": ".",
+      "221": "F", "222": "V", "223": "#", "224": ",",
+      "231": "G", "232": "W", "233": "$", "234": "{}",
+      "241": "H", "242": "X", "243": "_", "244": "[]",
+      "311": "I", "312": "Y", "313": "&", "314": "=",
+      "321": "J", "322": "Z", "323": "-", "324": "%",
+      "331": "K", "332": "1", "333": "+", "334": "<",
+      "341": "L", "342": "2", "343": "()", "344": ">",
+      "411": "M", "412": "3", "413": "/", "414": "~",
+      "421": "N", "422": "4", "423": "*", "424": "÷",
+      "431": "O", "432": "5", "433": "“", "434": "|",
+      "441": "P", "442": "6", "443": "`", "444": " "
+    };
 
-    function getCodonMap(chars) {
-      const codonMap = {};
-      const reverseMap = {};
-      let i = 0;
-      for (let a of chars) {
-        for (let b of chars) {
-          for (let c of chars) {
-            const code = a + b + c;
-            const val = values[i];
-            codonMap[code] = val;
-            reverseMap[val.toUpperCase()] = code;
-            i++;
-          }
-        }
+    function getCurrentCodonMap() {
+      const chars = document.getElementById("codonChars").value;
+      if (chars.length !== 4 || new Set(chars).size !== 4) {
+        alert("Please enter exactly 4 unique characters for the codon set.");
+        return null;
       }
-      return { codonMap, reverseMap };
+      const codonMap = {};
+      for (let key in baseCodonTable) {
+        let convertedKey = key.split('').map(d => chars[parseInt(d) - 1]).join('');
+        codonMap[convertedKey] = baseCodonTable[key];
+      }
+      return codonMap;
+    }
+
+    function getReverseMap(codonMap) {
+      const reverse = {};
+      for (let key in codonMap) {
+        reverse[codonMap[key].toUpperCase()] = key;
+      }
+      return reverse;
     }
 
     function encode() {
-      const chars = document.getElementById("codonChars").value;
-      if (new Set(chars).size !== 4) {
-        alert("Please enter 4 unique characters for the codon alphabet.");
-        return;
-      }
-      const { reverseMap } = getCodonMap(chars);
+      const codonMap = getCurrentCodonMap();
+      if (!codonMap) return;
+      const reverseMap = getReverseMap(codonMap);
       const input = document.getElementById("input").value.toUpperCase();
       let result = [];
       for (let ch of input) {
@@ -70,12 +154,8 @@
     }
 
     function decode() {
-      const chars = document.getElementById("codonChars").value;
-      if (new Set(chars).size !== 4) {
-        alert("Please enter 4 unique characters for the codon alphabet.");
-        return;
-      }
-      const { codonMap } = getCodonMap(chars);
+      const codonMap = getCurrentCodonMap();
+      if (!codonMap) return;
       const input = document.getElementById("input").value.trim();
       const parts = input.split(/\s+/);
       let result = parts.map(code => codonMap[code] || "?").join("");
