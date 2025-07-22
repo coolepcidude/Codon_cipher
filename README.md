@@ -1,3 +1,5 @@
+CURRENTLY BROKEN!!
+
 # Codon Cipher
 
 A simple custom cipher tool inspired by the genetic codon table. This tool encodes and decodes characters using a unique 3-digit codon system, allowing for fun experimentation with encryption and obfuscation.
