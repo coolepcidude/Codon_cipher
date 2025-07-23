@@ -1,176 +1,679 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Codon Cipher Encoder/Decoder</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #eef2f3, #8e9eab);
-      margin: 0;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    h1 {
-      color: #333;
-      margin-bottom: 1rem;
-    }
-    .nav {
-      margin-bottom: 1rem;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 1rem;
-    }
-    textarea {
-      width: 100%;
-      max-width: 700px;
-      height: 100px;
-      margin-bottom: 1rem;
-      font-family: monospace;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 0.5rem;
-      resize: vertical;
-    }
-    input[type="text"] {
-      width: 150px;
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-family: monospace;
-      text-align: center;
-    }
-    .button {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      background-color: #333;
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      margin: 0.5rem;
-      transition: background 0.3s;
-    }
-    .button:hover {
-      background-color: #555;
-    }
-    .output {
-      width: 100%;
-      max-width: 700px;
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      min-height: 50px;
-      margin-top: 1rem;
-      border-radius: 5px;
-      word-wrap: break-word;
-    }
-    .container {
-      width: 100%;
-      max-width: 700px;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codon Cipher Tool</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .toggle-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .toggle-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toggle-button.active {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tables-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .mono-table-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .carousel-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s ease;
+            width: 300%;
+        }
+        
+        .table-wrapper {
+            text-align: center;
+            width: 33.333%;
+            flex-shrink: 0;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .carousel-nav:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .carousel-nav.prev {
+            left: 10px;
+        }
+        
+        .carousel-nav.next {
+            right: 10px;
+        }
+        
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+        
+        .table-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .codon-table {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            background: #000;
+            border: 2px solid #333;
+            width: 350px;
+            margin: 0 auto;
+        }
+        
+        .cell {
+            background: #000;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+        }
+        
+        .header-cell {
+            background: #333;
+            font-size: 16px;
+        }
+        
+        .content-cell {
+            flex-direction: column;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+        
+        .tools {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .tool-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h3 {
+            color: #fff;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            box-sizing: border-box;
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            min-height: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .error {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .character-count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .tri-map-info {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 1200px) {
+            .carousel-container {
+                max-width: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tools {
+                grid-template-columns: 1fr;
+            }
+            
+            .codon-table {
+                width: 280px;
+                font-size: 10px;
+            }
+            
+            .cell {
+                min-height: 40px;
+                padding: 5px;
+            }
+            
+            .carousel-container {
+                max-width: 300px;
+            }
+            
+            .carousel-nav {
+                width: 35px;
+                height: 35px;
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="nav">
-      <h1>Codon Cipher Encoder/Decoder</h1>
-      <label for="modeSelect">Mode:</label>
-      <select id="modeSelect">
-        <option value="classic">Codon Cipher</option>
-        <option value="tri">Tri-Map Codon Cipher</option>
-      </select>
+    <div class="container">
+        <h1>🧬 Codon Cipher Tool</h1>
+        
+        <div class="mode-toggle">
+            <button class="toggle-button active" id="monoBtn" onclick="switchMode('mono')">Mono-Map Cipher</button>
+            <button class="toggle-button" id="triBtn" onclick="switchMode('tri')">Tri-Map Cipher</button>
+        </div>
+        
+        <div class="instructions" id="instructions">
+            <h3>Mono-Map Codon Cipher:</h3>
+            <p><strong>Encoding format:</strong> [row][column][position] (e.g., 111 = A, 444 = space)</p>
+            <p><strong>How it works:</strong> Uses one table for all characters. Each character gets the same code every time.</p>
+        </div>
+        
+        <div class="character-count">
+            📊 <strong>Complete Character Set:</strong> 26 Letters + 10 Digits + 27 Symbols + 1 Space = 64 Total Characters
+        </div>
+        
+        <div class="tables-container" id="tablesContainer">
+            <!-- Tables will be generated by JavaScript -->
+        </div>
+        
+        <div class="tools">
+            <div class="tool-section">
+                <h3>🔒 Encoder</h3>
+                <textarea id="plaintext" placeholder="Enter text to encode..."></textarea>
+                <div class="output" id="encodedOutput">Encoded text will appear here...</div>
+            </div>
+            
+            <div class="tool-section">
+                <h3>🔓 Decoder</h3>
+                <textarea id="ciphertext" placeholder="Enter cipher codes to decode (e.g., 111 112 113)..."></textarea>
+                <div class="output" id="decodedOutput">Decoded text will appear here...</div>
+            </div>
+        </div>
     </div>
 
-    <label for="codonChars">Codon Characters (4 unique chars):</label>
-    <input type="text" id="codonChars" value="1234" maxlength="4">
+    <script>
+        let currentMode = 'mono';
 
-    <label for="input">Input:</label>
-    <textarea id="input"></textarea>
+        // Mono-map table (original)
+        const monoTable = {
+            1: {
+                1: ['A', 'Q', '7', '+'],
+                2: ['B', 'R', '8', '-'],
+                3: ['C', 'S', '9', '*'],
+                4: ['D', 'T', '0', '/']
+            },
+            2: {
+                1: ['E', 'U', '1', '='],
+                2: ['F', 'V', '2', '('],
+                3: ['G', 'W', '3', ')'],
+                4: ['H', 'X', '4', '[']
+            },
+            3: {
+                1: ['I', 'Y', '5', ']'],
+                2: ['J', 'Z', '6', '{'],
+                3: ['K', '!', '@', '}'],
+                4: ['L', '#', '$', '%']
+            },
+            4: {
+                1: ['M', '^', '&', '<'],
+                2: ['N', '>', '?', ':'],
+                3: ['O', ';', '"', '\''],
+                4: ['P', ',', '.', ' ']
+            }
+        };
 
-    <div class="controls">
-      <button class="button" onclick="encode()">Encode</button>
-      <button class="button" onclick="decode()">Decode</button>
-    </div>
+        // Tri-map tables (A, B, C) - A is same as mono for consistency, B and C are different
+        const triTables = {
+            A: {
+                1: {
+                    1: ['A', 'Q', '7', '+'],
+                    2: ['B', 'R', '8', '-'],
+                    3: ['C', 'S', '9', '*'],
+                    4: ['D', 'T', '0', '/']
+                },
+                2: {
+                    1: ['E', 'U', '1', '='],
+                    2: ['F', 'V', '2', '('],
+                    3: ['G', 'W', '3', ')'],
+                    4: ['H', 'X', '4', '[']
+                },
+                3: {
+                    1: ['I', 'Y', '5', ']'],
+                    2: ['J', 'Z', '6', '{'],
+                    3: ['K', '!', '@', '}'],
+                    4: ['L', '#', '$', '%']
+                },
+                4: {
+                    1: ['M', '^', '&', '<'],
+                    2: ['N', '>', '?', ':'],
+                    3: ['O', ';', '"', '\''],
+                    4: ['P', ',', '.', ' ']
+                }
+            },
+            B: {
+                1: {
+                    1: ['A', 'M', '4', '~'],
+                    2: ['E', 'N', '3', '`'],
+                    3: ['I', 'P', '2', '|'],
+                    4: ['O', 'L', '1', '\\']
+                },
+                2: {
+                    1: ['U', 'K', '0', '_'],
+                    2: ['Y', 'J', '9', '€'],
+                    3: ['Q', 'H', '8', '¥'],
+                    4: ['W', 'G', '7', '¢']
+                },
+                3: {
+                    1: ['R', 'F', '6', '£'],
+                    2: ['T', 'D', '5', '§'],
+                    3: ['S', 'C', '+', '©'],
+                    4: ['V', 'B', '-', '®']
+                },
+                4: {
+                    1: ['X', 'Z', '*', '™'],
+                    2: ['!', '@', '/', '±'],
+                    3: ['#', '$', '=', '×'],
+                    4: ['%', '^', '&', ' ']
+                }
+            },
+            C: {
+                1: {
+                    1: ['A', 'Z', '&', '¿'],
+                    2: ['Y', 'X', '%', '¡'],
+                    3: ['W', 'V', '$', 'µ'],
+                    4: ['U', 'T', '#', '¶']
+                },
+                2: {
+                    1: ['S', 'R', '@', '†'],
+                    2: ['Q', 'P', '!', '‡'],
+                    3: ['O', 'N', '0', '•'],
+                    4: ['M', 'L', '9', '‰']
+                },
+                3: {
+                    1: ['K', 'J', '8', '‹'],
+                    2: ['I', 'H', '7', '›'],
+                    3: ['G', 'F', '6', '«'],
+                    4: ['E', 'D', '5', '»']
+                },
+                4: {
+                    1: ['C', 'B', '4', '°'],
+                    2: ['3', '2', '1', '•'],
+                    3: ['=', '(', ')', '<'],
+                    4: ['>', '[', ']', ' ']
+                }
+            }
+        };
 
-    <h3>Output:</h3>
-    <div class="output" id="output"></div>
-  </div>
+        // Create reverse lookup tables
+        let monoReverseTable = {};
+        let triReverseTable = {A: {}, B: {}, C: {}};
 
-<script>
-  const codonMaps = {
-    A: {"111":"A","112":"Q","113":"6","114":"^","121":"E","122":"U","123":"%","124":"&","131":"C","132":"S","133":"9","134":"!","141":"D","142":"T","143":"0","144":"?","211":"E","212":"U","213":"@","214":".","221":"F","222":"V","223":"#","224":",","231":"G","232":"W","233":"$","234":"{}","241":"H","242":"X","243":"_","244":"[]","311":"I","312":"Y","313":"&","314":"=","321":"J","322":"Z","323":"-","324":"%","331":"K","332":"1","333":"+","334":"<","341":"L","342":"2","343":"()","344":">","411":"M","412":"3","413":"/","414":"~","421":"N","422":"4","423":"*","424":"÷","431":"O","432":"5","433":"“","434":"|","441":"P","442":"6","443":"`","444":" "},
-    B: {"111":"A","112":"Q","113":"7","114":"=","121":"E","122":"U","123":"!","124":">","131":"I","132":"Y","133":"%","134":"?","141":"M","142":"3","143":"()","144":";","211":"C","212":"S","213":"9","214":"<","221":"G","222":"W","223":"$","224":"{}","231":"K","232":"1","233":"+","234":"\\","241":"O","242":"5","243":"`","244":"|","311":"D","312":"T","313":"0","314":"~","321":"H","322":"X","323":"_","324":",","331":"L","332":"2","333":"[]","334":"÷","341":"P","342":"6","343":"-","344":" ","411":"F","412":"V","413":"#","414":"\"","421":"J","422":"Z","423":"&","424":"*","431":"N","432":"4","433":"~","434":".","441":"R","442":"8","443":"^","444":"/"},
-    C: {"111":"A","112":"Q","113":"6","114":"^","121":"E","122":"U","123":"%","124":"&","131":"H","132":"5","133":"$","134":"*","141":"J","142":"X","143":"#","144":".","211":"K","212":"1","213":"+","214":"<","221":"L","222":"2","223":"()","224":">","231":"M","232":"3","233":"/","234":"~","241":"N","242":"4","243":"-","244":",","311":"O","312":"5","313":"“","314":"|","321":"P","322":"6","323":"`","324":" ","331":"R","332":"8","333":"7","334":";","341":"S","342":"9","343":"0","344":"=","411":"T","412":"Z","413":"!","414":">","421":"I","422":"Y","423":"@","424":"{}","431":"C","432":"S","433":"[","434":"]","441":"D","442":"T","443":"_","444":"\\"}
-  };
+        function createReverseTables() {
+            // Mono table
+            monoReverseTable = {};
+            for (let row = 1; row <= 4; row++) {
+                for (let col = 1; col <= 4; col++) {
+                    for (let pos = 1; pos <= 4; pos++) {
+                        const char = monoTable[row][col][pos - 1];
+                        monoReverseTable[char] = `${row}${col}${pos}`;
+                    }
+                }
+            }
 
-  function generateMapSet(map) {
-    const chars = document.getElementById("codonChars").value;
-    const result = {};
-    for (let codon in map) {
-      const converted = codon.split('').map(d => chars[parseInt(d) - 1]).join('');
-      result[converted] = map[codon];
-    }
-    return result;
-  }
+            // Tri tables
+            ['A', 'B', 'C'].forEach(tableName => {
+                triReverseTable[tableName] = {};
+                for (let row = 1; row <= 4; row++) {
+                    for (let col = 1; col <= 4; col++) {
+                        for (let pos = 1; pos <= 4; pos++) {
+                            const char = triTables[tableName][row][col][pos - 1];
+                            triReverseTable[tableName][char] = `${row}${col}${pos}`;
+                        }
+                    }
+                }
+            });
+        }
 
-  function encode() {
-    const mode = document.getElementById("modeSelect").value;
-    const input = document.getElementById("input").value.toUpperCase();
-    const chars = document.getElementById("codonChars").value;
-    if (chars.length !== 4 || new Set(chars).size !== 4) {
-      alert("Please enter exactly 4 unique characters for the codon set.");
-      return;
-    }
-    const maps = mode === 'tri'
-      ? [generateMapSet(codonMaps.A), generateMapSet(codonMaps.B), generateMapSet(codonMaps.C)]
-      : [generateMapSet(codonMaps.A)];
-    const reverseMaps = maps.map(m => Object.fromEntries(Object.entries(m).map(([k, v]) => [v.toUpperCase(), k])));
+        function generateTable(tableData, title) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-wrapper';
+            
+            const titleEl = document.createElement('div');
+            titleEl.className = 'table-title';
+            titleEl.textContent = title;
+            wrapper.appendChild(titleEl);
+            
+            const table = document.createElement('div');
+            table.className = 'codon-table';
+            
+            // Header row
+            const headerRow = ['', '1', '2', '3', '4'];
+            headerRow.forEach(header => {
+                const cell = document.createElement('div');
+                cell.className = 'cell header-cell';
+                cell.textContent = header;
+                table.appendChild(cell);
+            });
 
-    const result = input.split('').map((char, i) => {
-      const mapIndex = i % reverseMaps.length;
-      return reverseMaps[mapIndex][char] || '';
-    });
-    document.getElementById("output").innerText = result.join(" ");
-  }
+            // Content rows
+            for (let row = 1; row <= 4; row++) {
+                // Row header
+                const rowHeader = document.createElement('div');
+                rowHeader.className = 'cell header-cell';
+                rowHeader.textContent = row;
+                table.appendChild(rowHeader);
 
-  function decode() {
-    const mode = document.getElementById("modeSelect").value;
-    const input = document.getElementById("input").value.trim();
-    const parts = input.split(/\s+/);
-    const chars = document.getElementById("codonChars").value;
-    if (chars.length !== 4 || new Set(chars).size !== 4) {
-      alert("Please enter exactly 4 unique characters for the codon set.");
-      return;
-    }
-    const maps = mode === 'tri'
-      ? [generateMapSet(codonMaps.A), generateMapSet(codonMaps.B), generateMapSet(codonMaps.C)]
-      : [generateMapSet(codonMaps.A)];
+                // Row content
+                for (let col = 1; col <= 4; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell content-cell';
+                    const chars = tableData[row][col];
+                    const displayChars = chars.map(char => 
+                        char === ' ' ? '(space)' : char
+                    ).join('<br>');
+                    cell.innerHTML = displayChars;
+                    table.appendChild(cell);
+                }
+            }
+            
+            wrapper.appendChild(table);
+            return wrapper;
+        }
 
-    const result = parts.map((code, i) => {
-      const mapIndex = i % maps.length;
-      return maps[mapIndex][code] || '?';
-    });
-    document.getElementById("output").innerText = result.join('');
-  }
-</script>
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Update button states
+            document.getElementById('monoBtn').classList.toggle('active', mode === 'mono');
+            document.getElementById('triBtn').classList.toggle('active', mode === 'tri');
+            
+            // Update instructions
+            const instructions = document.getElementById('instructions');
+            const tablesContainer = document.getElementById('tablesContainer');
+            
+            if (mode === 'mono') {
+                instructions.innerHTML = `
+                    <h3>Mono-Map Codon Cipher:</h3>
+                    <p><strong>Encoding format:</strong> [row][column][position] (e.g., 111 = A, 444 = space)</p>
+                    <p><strong>How it works:</strong> Uses one table for all characters. Each character gets the same code every time.</p>
+                `;
+                
+                tablesContainer.innerHTML = '';
+                tablesContainer.appendChild(generateTable(monoTable, 'Table'));
+                
+            } else {
+                instructions.innerHTML = `
+                    <h3>Tri-Map Codon Cipher:</h3>
+                    <p><strong>Encoding format:</strong> [row][column][position] (e.g., 111 = A, 444 = space)</p>
+                    <p><strong>How it works:</strong> Uses three tables (A, B, C) that cycle for each character position.</p>
+                    <div class="tri-map-info">
+                        <strong>🔄 Table Cycling:</strong> Character 1→Table A, Character 2→Table B, Character 3→Table C, Character 4→Table A, etc.<br>
+                        <strong>📌 Consistency:</strong> 111 = A and 444 = space on all tables.
+                    </div>
+                `;
+                
+                tablesContainer.innerHTML = '';
+                tablesContainer.appendChild(generateTable(triTables.A, 'Table A'));
+                tablesContainer.appendChild(generateTable(triTables.B, 'Table B'));
+                tablesContainer.appendChild(generateTable(triTables.C, 'Table C'));
+            }
+            
+            // Re-encode/decode current text
+            encodeText();
+            decodeText();
+        }
+
+        function encodeText() {
+            const plaintext = document.getElementById('plaintext').value.toUpperCase();
+            const output = document.getElementById('encodedOutput');
+            
+            if (!plaintext.trim()) {
+                output.innerHTML = 'Encoded text will appear here...';
+                return;
+            }
+
+            let encoded = [];
+            let unknownChars = [];
+
+            for (let i = 0; i < plaintext.length; i++) {
+                const char = plaintext[i];
+                let code = null;
+
+                if (currentMode === 'mono') {
+                    code = monoReverseTable[char];
+                } else {
+                    // Tri-map: cycle through tables A, B, C
+                    const tableNames = ['A', 'B', 'C'];
+                    const tableName = tableNames[i % 3];
+                    code = triReverseTable[tableName][char];
+                }
+
+                if (code) {
+                    encoded.push(code);
+                } else {
+                    encoded.push('[?]');
+                    if (!unknownChars.includes(char)) {
+                        unknownChars.push(char);
+                    }
+                }
+            }
+
+            let result = encoded.join(' ');
+            if (unknownChars.length > 0) {
+                result += '\n\n⚠️ Unknown characters (marked as [?]): ' + unknownChars.join(', ');
+            }
+
+            output.textContent = result;
+        }
+
+        function decodeText() {
+            const ciphertext = document.getElementById('ciphertext').value.trim();
+            const output = document.getElementById('decodedOutput');
+            
+            if (!ciphertext) {
+                output.innerHTML = 'Decoded text will appear here...';
+                return;
+            }
+
+            const codes = ciphertext.split(/\s+/).filter(code => code.length > 0);
+            let decoded = '';
+            let errors = [];
+
+            for (let i = 0; i < codes.length; i++) {
+                const code = codes[i];
+                
+                if (code === '[?]') {
+                    decoded += '?';
+                    continue;
+                }
+
+                if (code.length !== 3 || !/^\d{3}$/.test(code)) {
+                    errors.push(`Invalid code format: "${code}" (position ${i + 1})`);
+                    decoded += '?';
+                    continue;
+                }
+
+                const row = parseInt(code[0]);
+                const col = parseInt(code[1]);
+                const pos = parseInt(code[2]);
+
+                if (row < 1 || row > 4 || col < 1 || col > 4 || pos < 1 || pos > 4) {
+                    errors.push(`Invalid coordinates: "${code}" (position ${i + 1})`);
+                    decoded += '?';
+                    continue;
+                }
+
+                let char = null;
+                
+                if (currentMode === 'mono') {
+                    char = monoTable[row][col][pos - 1];
+                } else {
+                    // Tri-map: cycle through tables A, B, C
+                    const tableNames = ['A', 'B', 'C'];
+                    const tableName = tableNames[i % 3];
+                    char = triTables[tableName][row][col][pos - 1];
+                }
+
+                decoded += char;
+            }
+
+            let result = decoded;
+            if (errors.length > 0) {
+                result += '\n\n⚠️ Decoding errors:\n' + errors.join('\n');
+            }
+
+            output.textContent = result;
+        }
+
+        // Initialize
+        createReverseTables();
+        switchMode('mono');
+
+        // Add real-time encoding/decoding
+        document.getElementById('plaintext').addEventListener('input', encodeText);
+        document.getElementById('ciphertext').addEventListener('input', decodeText);
+    </script>
 </body>
 </html>
