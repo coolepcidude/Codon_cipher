@@ -90,6 +90,48 @@
             flex-shrink: 0;
         }
         
+        .table-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .codon-table {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            background: #000;
+            border: 2px solid #333;
+            width: 350px;
+            margin: 0 auto;
+        }
+        
+        .cell {
+            background: #000;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+        }
+        
+        .header-cell {
+            background: #333;
+            font-size: 16px;
+        }
+        
+        .content-cell {
+            flex-direction: column;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+        
         .carousel-nav {
             position: absolute;
             top: 50%;
@@ -141,48 +183,6 @@
         .indicator.active {
             background: #667eea;
             transform: scale(1.2);
-        }
-        
-        .table-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .codon-table {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2px;
-            background: #000;
-            border: 2px solid #333;
-            width: 350px;
-            margin: 0 auto;
-        }
-        
-        .cell {
-            background: #000;
-            color: white;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #333;
-        }
-        
-        .header-cell {
-            background: #333;
-            font-size: 16px;
-        }
-        
-        .content-cell {
-            flex-direction: column;
-            font-size: 12px;
-            line-height: 1.2;
         }
         
         .tools {
@@ -335,123 +335,40 @@
 
     <script>
         let currentMode = 'mono';
+        let currentCarouselIndex = 0;
 
-        // Mono-map table (original)
         const monoTable = {
-            1: {
-                1: ['A', 'Q', '7', '+'],
-                2: ['B', 'R', '8', '-'],
-                3: ['C', 'S', '9', '*'],
-                4: ['D', 'T', '0', '/']
-            },
-            2: {
-                1: ['E', 'U', '1', '='],
-                2: ['F', 'V', '2', '('],
-                3: ['G', 'W', '3', ')'],
-                4: ['H', 'X', '4', '[']
-            },
-            3: {
-                1: ['I', 'Y', '5', ']'],
-                2: ['J', 'Z', '6', '{'],
-                3: ['K', '!', '@', '}'],
-                4: ['L', '#', '$', '%']
-            },
-            4: {
-                1: ['M', '^', '&', '<'],
-                2: ['N', '>', '?', ':'],
-                3: ['O', ';', '"', '\''],
-                4: ['P', ',', '.', ' ']
-            }
+            1: { 1: ['A', 'Q', '7', '+'], 2: ['B', 'R', '8', '-'], 3: ['C', 'S', '9', '*'], 4: ['D', 'T', '0', '/'] },
+            2: { 1: ['E', 'U', '1', '='], 2: ['F', 'V', '2', '('], 3: ['G', 'W', '3', ')'], 4: ['H', 'X', '4', '['] },
+            3: { 1: ['I', 'Y', '5', ']'], 2: ['J', 'Z', '6', '{'], 3: ['K', '!', '@', '}'], 4: ['L', '#', '$', '%'] },
+            4: { 1: ['M', '^', '&', '<'], 2: ['N', '>', '?', ':'], 3: ['O', ';', '"', '\''], 4: ['P', ',', '.', ' '] }
         };
 
-        // Tri-map tables (A, B, C) - A is same as mono for consistency, B and C are different
         const triTables = {
             A: {
-                1: {
-                    1: ['A', 'Q', '7', '+'],
-                    2: ['B', 'R', '8', '-'],
-                    3: ['C', 'S', '9', '*'],
-                    4: ['D', 'T', '0', '/']
-                },
-                2: {
-                    1: ['E', 'U', '1', '='],
-                    2: ['F', 'V', '2', '('],
-                    3: ['G', 'W', '3', ')'],
-                    4: ['H', 'X', '4', '[']
-                },
-                3: {
-                    1: ['I', 'Y', '5', ']'],
-                    2: ['J', 'Z', '6', '{'],
-                    3: ['K', '!', '@', '}'],
-                    4: ['L', '#', '$', '%']
-                },
-                4: {
-                    1: ['M', '^', '&', '<'],
-                    2: ['N', '>', '?', ':'],
-                    3: ['O', ';', '"', '\''],
-                    4: ['P', ',', '.', ' ']
-                }
+                1: { 1: ['A', 'Q', '7', '+'], 2: ['B', 'R', '8', '-'], 3: ['C', 'S', '9', '*'], 4: ['D', 'T', '0', '/'] },
+                2: { 1: ['E', 'U', '1', '='], 2: ['F', 'V', '2', '('], 3: ['G', 'W', '3', ')'], 4: ['H', 'X', '4', '['] },
+                3: { 1: ['I', 'Y', '5', ']'], 2: ['J', 'Z', '6', '{'], 3: ['K', '!', '@', '}'], 4: ['L', '#', '$', '%'] },
+                4: { 1: ['M', '^', '&', '<'], 2: ['N', '>', '?', ':'], 3: ['O', ';', '"', '\''], 4: ['P', ',', '.', ' '] }
             },
             B: {
-                1: {
-                    1: ['A', 'M', '4', '~'],
-                    2: ['E', 'N', '3', '`'],
-                    3: ['I', 'P', '2', '|'],
-                    4: ['O', 'L', '1', '\\']
-                },
-                2: {
-                    1: ['U', 'K', '0', '_'],
-                    2: ['Y', 'J', '9', '€'],
-                    3: ['Q', 'H', '8', '¥'],
-                    4: ['W', 'G', '7', '¢']
-                },
-                3: {
-                    1: ['R', 'F', '6', '£'],
-                    2: ['T', 'D', '5', '§'],
-                    3: ['S', 'C', '+', '©'],
-                    4: ['V', 'B', '-', '®']
-                },
-                4: {
-                    1: ['X', 'Z', '*', '™'],
-                    2: ['!', '@', '/', '±'],
-                    3: ['#', '$', '=', '×'],
-                    4: ['%', '^', '&', ' ']
-                }
+                1: { 1: ['A', 'M', '4', '~'], 2: ['E', 'N', '3', '`'], 3: ['I', 'P', '2', '|'], 4: ['O', 'L', '1', '\\'] },
+                2: { 1: ['U', 'K', '0', '_'], 2: ['Y', 'J', '9', '€'], 3: ['Q', 'H', '8', '¥'], 4: ['W', 'G', '7', '¢'] },
+                3: { 1: ['R', 'F', '6', '£'], 2: ['T', 'D', '5', '§'], 3: ['S', 'C', '+', '©'], 4: ['V', 'B', '-', '®'] },
+                4: { 1: ['X', 'Z', '*', '™'], 2: ['!', '@', '/', '±'], 3: ['#', '$', '=', '×'], 4: ['%', '^', '&', ' '] }
             },
             C: {
-                1: {
-                    1: ['A', 'Z', '&', '¿'],
-                    2: ['Y', 'X', '%', '¡'],
-                    3: ['W', 'V', '$', 'µ'],
-                    4: ['U', 'T', '#', '¶']
-                },
-                2: {
-                    1: ['S', 'R', '@', '†'],
-                    2: ['Q', 'P', '!', '‡'],
-                    3: ['O', 'N', '0', '•'],
-                    4: ['M', 'L', '9', '‰']
-                },
-                3: {
-                    1: ['K', 'J', '8', '‹'],
-                    2: ['I', 'H', '7', '›'],
-                    3: ['G', 'F', '6', '«'],
-                    4: ['E', 'D', '5', '»']
-                },
-                4: {
-                    1: ['C', 'B', '4', '°'],
-                    2: ['3', '2', '1', '•'],
-                    3: ['=', '(', ')', '<'],
-                    4: ['>', '[', ']', ' ']
-                }
+                1: { 1: ['A', 'Z', '&', '¿'], 2: ['Y', 'X', '%', '¡'], 3: ['W', 'V', '$', 'µ'], 4: ['U', 'T', '#', '¶'] },
+                2: { 1: ['S', 'R', '@', '†'], 2: ['Q', 'P', '!', '‡'], 3: ['O', 'N', '0', '•'], 4: ['M', 'L', '9', '‰'] },
+                3: { 1: ['K', 'J', '8', '‹'], 2: ['I', 'H', '7', '›'], 3: ['G', 'F', '6', '«'], 4: ['E', 'D', '5', '»'] },
+                4: { 1: ['C', 'B', '4', '°'], 2: ['3', '2', '1', '•'], 3: ['=', '(', ')', '<'], 4: ['>', '[', ']', ' '] }
             }
         };
 
-        // Create reverse lookup tables
         let monoReverseTable = {};
         let triReverseTable = {A: {}, B: {}, C: {}};
 
         function createReverseTables() {
-            // Mono table
             monoReverseTable = {};
             for (let row = 1; row <= 4; row++) {
                 for (let col = 1; col <= 4; col++) {
@@ -462,7 +379,6 @@
                 }
             }
 
-            // Tri tables
             ['A', 'B', 'C'].forEach(tableName => {
                 triReverseTable[tableName] = {};
                 for (let row = 1; row <= 4; row++) {
@@ -488,7 +404,6 @@
             const table = document.createElement('div');
             table.className = 'codon-table';
             
-            // Header row
             const headerRow = ['', '1', '2', '3', '4'];
             headerRow.forEach(header => {
                 const cell = document.createElement('div');
@@ -497,15 +412,12 @@
                 table.appendChild(cell);
             });
 
-            // Content rows
             for (let row = 1; row <= 4; row++) {
-                // Row header
                 const rowHeader = document.createElement('div');
                 rowHeader.className = 'cell header-cell';
                 rowHeader.textContent = row;
                 table.appendChild(rowHeader);
 
-                // Row content
                 for (let col = 1; col <= 4; col++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell content-cell';
@@ -522,14 +434,85 @@
             return wrapper;
         }
 
+        function createCarousel() {
+            const container = document.createElement('div');
+            container.className = 'carousel-container';
+            
+            const track = document.createElement('div');
+            track.className = 'carousel-track';
+            track.id = 'carouselTrack';
+            
+            track.appendChild(generateTable(triTables.A, 'Table A'));
+            track.appendChild(generateTable(triTables.B, 'Table B'));
+            track.appendChild(generateTable(triTables.C, 'Table C'));
+            
+            container.appendChild(track);
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'carousel-nav prev';
+            prevBtn.innerHTML = '❮';
+            prevBtn.onclick = () => navigateCarousel(-1);
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'carousel-nav next';
+            nextBtn.innerHTML = '❯';
+            nextBtn.onclick = () => navigateCarousel(1);
+            
+            container.appendChild(prevBtn);
+            container.appendChild(nextBtn);
+            
+            const indicators = document.createElement('div');
+            indicators.className = 'carousel-indicators';
+            indicators.id = 'carouselIndicators';
+            
+            for (let i = 0; i < 3; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = `indicator ${i === 0 ? 'active' : ''}`;
+                indicator.onclick = () => goToSlide(i);
+                indicators.appendChild(indicator);
+            }
+            
+            container.appendChild(indicators);
+            container.style.cursor = 'grab';
+            
+            return container;
+        }
+
+        function navigateCarousel(direction) {
+            currentCarouselIndex += direction;
+            if (currentCarouselIndex < 0) currentCarouselIndex = 2;
+            else if (currentCarouselIndex > 2) currentCarouselIndex = 0;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentCarouselIndex = index;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const indicators = document.getElementById('carouselIndicators');
+            
+            if (track) {
+                track.style.transform = `translateX(-${currentCarouselIndex * 33.333}%)`;
+            }
+            
+            if (indicators) {
+                const indicatorElements = indicators.children;
+                for (let i = 0; i < indicatorElements.length; i++) {
+                    indicatorElements[i].classList.toggle('active', i === currentCarouselIndex);
+                }
+            }
+        }
+
         function switchMode(mode) {
             currentMode = mode;
+            currentCarouselIndex = 0;
             
-            // Update button states
             document.getElementById('monoBtn').classList.toggle('active', mode === 'mono');
             document.getElementById('triBtn').classList.toggle('active', mode === 'tri');
             
-            // Update instructions
             const instructions = document.getElementById('instructions');
             const tablesContainer = document.getElementById('tablesContainer');
             
@@ -541,7 +524,11 @@
                 `;
                 
                 tablesContainer.innerHTML = '';
-                tablesContainer.appendChild(generateTable(monoTable, 'Table'));
+                tablesContainer.className = 'tables-container';
+                const monoContainer = document.createElement('div');
+                monoContainer.className = 'mono-table-container';
+                monoContainer.appendChild(generateTable(monoTable, 'Table'));
+                tablesContainer.appendChild(monoContainer);
                 
             } else {
                 instructions.innerHTML = `
@@ -550,17 +537,16 @@
                     <p><strong>How it works:</strong> Uses three tables (A, B, C) that cycle for each character position.</p>
                     <div class="tri-map-info">
                         <strong>🔄 Table Cycling:</strong> Character 1→Table A, Character 2→Table B, Character 3→Table C, Character 4→Table A, etc.<br>
-                        <strong>📌 Consistency:</strong> 111 = A and 444 = space on all tables.
+                        <strong>📌 Consistency:</strong> 111 = A and 444 = space on all tables.<br>
+                        <strong>🎯 Navigation:</strong> Use arrows, indicators, or swipe to view different tables.
                     </div>
                 `;
                 
                 tablesContainer.innerHTML = '';
-                tablesContainer.appendChild(generateTable(triTables.A, 'Table A'));
-                tablesContainer.appendChild(generateTable(triTables.B, 'Table B'));
-                tablesContainer.appendChild(generateTable(triTables.C, 'Table C'));
+                tablesContainer.className = 'tables-container';
+                tablesContainer.appendChild(createCarousel());
             }
             
-            // Re-encode/decode current text
             encodeText();
             decodeText();
         }
@@ -584,7 +570,6 @@
                 if (currentMode === 'mono') {
                     code = monoReverseTable[char];
                 } else {
-                    // Tri-map: cycle through tables A, B, C
                     const tableNames = ['A', 'B', 'C'];
                     const tableName = tableNames[i % 3];
                     code = triReverseTable[tableName][char];
@@ -650,7 +635,6 @@
                 if (currentMode === 'mono') {
                     char = monoTable[row][col][pos - 1];
                 } else {
-                    // Tri-map: cycle through tables A, B, C
                     const tableNames = ['A', 'B', 'C'];
                     const tableName = tableNames[i % 3];
                     char = triTables[tableName][row][col][pos - 1];
@@ -667,11 +651,9 @@
             output.textContent = result;
         }
 
-        // Initialize
         createReverseTables();
         switchMode('mono');
 
-        // Add real-time encoding/decoding
         document.getElementById('plaintext').addEventListener('input', encodeText);
         document.getElementById('ciphertext').addEventListener('input', decodeText);
     </script>
