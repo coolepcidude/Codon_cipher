@@ -78,7 +78,7 @@
         
         .carousel-container {
             position: relative;
-            max-width: 500px;
+            width: 100%;
             margin: 0 auto;
             overflow: hidden;
             border-radius: 15px;
@@ -113,7 +113,8 @@
             gap: 2px;
             background: #0f1115;
             border: 2px solid #2d333b;
-            width: 450px;
+            width: 100%;
+            max-width: 600px;
             margin: 0 auto;
         }
         
@@ -293,8 +294,8 @@
         }
         
         @media (max-width: 1200px) {
-            .carousel-container {
-                max-width: 450px;
+            .codon-table {
+                max-width: 500px;
             }
         }
         
@@ -304,7 +305,7 @@
             }
             
             .codon-table {
-                width: 320px;
+                max-width: 340px;
                 font-size: 10px;
             }
             
@@ -313,7 +314,7 @@
                 padding: 6px;
             }
             
-            .carousel-container {
+            .codon-table {
                 max-width: 340px;
             }
             
@@ -372,10 +373,10 @@
         let currentCarouselIndex = 0;
 
         const monoTable = {
-            1: { 1: ['A', 'Q', '7', '+'], 2: ['B', 'R', '8', '{'], 3: ['C', 'S', '9', '\'], 4: ['D', 'T', '0', '|'] },
+            1: { 1: ['A', 'Q', '7', '+'], 2: ['B', 'R', '8', '{'], 3: ['C', 'S', '9', '\\'], 4: ['D', 'T', '0', '|'] },
             2: { 1: ['E', 'U', '!', '['], 2: ['F', 'V', '@', ';'], 3: ['G', 'W', '#', ':'], 4: ['H', 'X', '$', '"'] },
             3: { 1: ['I', 'Y', '%', "'"], 2: ['J', 'Z', '^', ','], 3: ['K', '1', '&', '.'], 4: ['L', '2', '*', '?'] },
-            4: { 1: ['M', '3', '(', '/'], 2: ['N', '4', '_', '<'], 3: ['O', '5', '-', '>''], 4: ['P', '6', '=', ' '] }
+            4: { 1: ['M', '3', '(', '/'], 2: ['N', '4', '_', '<'], 3: ['O', '5', '-', '>'], 4: ['P', '6', '=', ' '] }
         };
 
         const triTables = {
